@@ -8,16 +8,24 @@
     <link rel="icon" href="https://i.ibb.co/FnVdp7L/6188294648397676890-99.jpg">
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1>SMS Chatbot</h1>
+    <section>
+        <div class="section1-container">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h1>SMS Chatbot</h1>
+                </div>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="user-input">
+                    <label for="user-input">
+                        <p>Type some thing...</p>
+                    </label>
+                    <button id="send-button">Send</button>
+                </div>
+            </div>
         </div>
-        <div class="chat-messages" id="chat-messages"></div>
-        <div class="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
-        </div>
-    </div>
+    </section>
+
     <script src="script.js"></script>
 </body>
 </html>

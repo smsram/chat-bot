@@ -39,13 +39,15 @@ async function generateResponse(prompt) {
 
 function cleanMarkdown(text) {
     return text
-        .replace(/#{1,6}\s?/g, '')
-        .replace(/\*\*/g, '')
-        .replace(/\n{3,}/g, '\n\n')
+        .replace(/\*\*(.*?)\*\*/g, "$1") // Replace **text** with span for bold styling
+        .replace(/^\*\s+/gm, '• ') // Replace '*' at the start of new lines with '•'
         .trim();
 }
 
 function addMessage(message, isUser) {
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('message-container');
+
     const messageElement = document.createElement('div');
     messageElement.classList.add('message');
     messageElement.classList.add(isUser ? 'user-message' : 'bot-message');
@@ -57,15 +59,46 @@ function addMessage(message, isUser) {
 
     const messageContent = document.createElement('div');
     messageContent.classList.add('message-content');
-    messageContent.innerHTML = isUser ? sanitizeHTML(message) : ''; // For bot, leave empty initially.
+
+    if (isUser) {
+        // For user messages, sanitize input to prevent XSS
+        messageContent.textContent = sanitizeHTML(message);
+    } else {
+        // For bot messages, allow rendering of clean HTML
+        messageContent.innerHTML = message; // Render as HTML
+
+        // Add "Copy" button inside the message-content container
+        const copyButton = document.createElement('button');
+        copyButton.classList.add('copy-button');
+        copyButton.textContent = 'Copy';
+        copyButton.addEventListener('click', () => {
+            copyToClipboard(messageContent.textContent || messageContent.innerText);
+        });
+
+        // Append the button below the response text
+        messageContent.appendChild(copyButton);
+    }
 
     messageElement.appendChild(profileImage);
     messageElement.appendChild(messageContent);
-    chatMessages.appendChild(messageElement);
+    messageContainer.appendChild(messageElement); // Append the message element to the container
+    chatMessages.appendChild(messageContainer); // Append the container to the chat messages
 
     scrollToBottom(); // Auto-scroll to the bottom
 
-    return messageContent; // Return the message content element for further manipulation.
+    return messageContent; // Return the message content element
+}
+
+// Function to copy text to the clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(
+        () => {
+            alert('Copied to clipboard!');
+        },
+        (err) => {
+            console.error('Failed to copy:', err);
+        }
+    );
 }
 
 function sanitizeHTML(str) {

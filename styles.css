@@ -86,6 +86,8 @@ section{
     background-color: #3a3a3a;
     margin-left: 10px;
     margin-bottom: 2rem;
+    /**/display: flex;
+    flex-direction: column;/**/
 }
 
 .profile-image {
